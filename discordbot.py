@@ -1,6 +1,11 @@
 from discord.ext import commands
 from os import getenv
 import traceback
+import random
+from googletrans import Translator
+import requests
+import json
+import urllib.request as req
 
 bot = commands.Bot(command_prefix='/')
 
