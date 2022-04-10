@@ -2,7 +2,7 @@ from discord.ext import commands
 from os import getenv
 import traceback
 import random
-from googletrans import Translator
+'#from googletrans import Translator'
 import requests
 '#import json'
 '#import urllib.request as req'
@@ -81,14 +81,14 @@ async def cw(ctx, arg):
     result = len(arg)
     await ctx.send("{}文字です。".format(result))
 
-@bot.command()
-async def t(ctx, *arg):
-    tr = Translator()
-    en = ''
-    for val in arg:
-        en += val + ' '
-    result = tr.translate(en, src="en", dest="ja").text
-    await ctx.send(result)
+# @bot.command()
+# async def t(ctx, *arg):
+#     tr = Translator()
+#     en = ''
+#     for val in arg:
+#         en += val + ' '
+#     result = tr.translate(en, src="en", dest="ja").text
+#     await ctx.send(result)
 
 @bot.command()
 async def address(ctx, arg):
