@@ -9,7 +9,7 @@ import urllib.request as req
 
 bot = commands.Bot(command_prefix='/')
 
-#メッセージ受信時に実行される処理
+'#メッセージ受信時に実行される処理'
 @bot.event
 async def on_message(message):
     #on_messageイベントの取得とコマンド機能を併用する際に必要な処理
@@ -35,7 +35,7 @@ async def helpp(ctx):
 
 
 @bot.command()
-async def print(ctx,*,arg):
+async def print(ctx , * , arg):
     await ctx.send(arg)
 
 @bot.command()
@@ -43,7 +43,7 @@ async def prints(ctx, *args):
     arguments = ', '.join(args)
     await ctx.send(arguments)
 
-  
+
 @bot.command()
 async def r(ctx, *arg):
     for i in arg:
@@ -53,7 +53,7 @@ async def r(ctx, *arg):
             await ctx.send("randomの引数はintのみです。") 
             return
 
-    if(len(arg)==1):
+    if(len(arg) == 1):
         result = random.randint(1,int(arg[0])+1)
         await ctx.send(result)  
     elif(len(arg)==2):
@@ -121,8 +121,5 @@ async def address(ctx, arg):
 #             if 'weathers' in ts['areas']:
 #                 for i,v in enumerate(ts['areas']['weathers']):
 #                     await ctx.send(times[i], ":", v)
-
-
-
 token = getenv('DISCORD_BOT_TOKEN')
 bot.run(token)
