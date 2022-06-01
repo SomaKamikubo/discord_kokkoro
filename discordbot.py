@@ -101,20 +101,7 @@ async def address(ctx, arg):
     data = response.json()
     await ctx.send(data['data']['fullAddress'])
 
-TRN_API_KEY = getenv('TRN-API-KEY')
-@bot.command()
-async def apex(ctx,arg):
-    base_url = "https://public-api.tracker.gg/v2/apex/standard/"
-    params = {"TRN-Api-Key":TRN_API_KEY}
-    endpoint = "profile/origin/{}".format(arg)
 
-    try:
-        response = requests.get(base_url)
-        response.raise_for_status()     # ステータスコード200番台以外は例外とする
-    except requests.exceptions.RequestException as e:
-        print("Error:{}".format(e))
-    data = response.json()
-    await ctx.send(data)
     
 @bot.command()
 async def wiki(ctx,*arg):
@@ -154,7 +141,7 @@ async def dog(ctx):
         await message.delete()
     await ctx.send(ImageUrl)
 
-
+    
 # @bot.command()
 # async def weather(ctx):
 #     # URLや保存ファイル名を指定
