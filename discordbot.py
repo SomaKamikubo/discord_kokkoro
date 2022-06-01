@@ -4,8 +4,8 @@ import traceback
 import random
 from googletrans import Translator
 import requests
-'#import json'
-'#import urllib.request as req'
+import json
+import urllib.request as req
 
 bot = commands.Bot(command_prefix='/')
 
@@ -102,14 +102,18 @@ async def address(ctx, arg):
     await ctx.send(data['data']['fullAddress'])
 
 @bot.command()
-async def wiki(ctx, *arg):
+async def teach(ctx, *arg):
     base_url = "https://ja.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=+True+&exsectopnformat=plain&titles="+arg[0]+"&format=json"
 
-    session = requests.Session()
-    req = session.get(base_url)
+    try:
+        session = requests.Session()
+        req = session.get(base_url)
+        response.raise_for_status()     # ステータスコード200番台以外は例外とする
+    except requests.exceptions.RequestException as e:
+        await ctx.send("申し訳ありません。\n「"+arg+"」についての知識がありません。")
+    
     req.close()
     res= req.json()
-
     pages=res['query']['pages']
     page_id = next(iter(pages))
     result = pages[page_id]["extract"]
