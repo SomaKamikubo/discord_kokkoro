@@ -101,10 +101,8 @@ async def address(ctx, arg):
     data = response.json()
     await ctx.send(data['data']['fullAddress'])
 
-
-    
 @bot.command()
-async def wiki(ctx,*arg):
+async def wiki(ctx, *arg):
     base_url = "https://ja.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=+True+&exsectopnformat=plain&titles="+arg[0]+"&format=json"
 
     session = requests.Session()
