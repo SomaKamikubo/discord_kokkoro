@@ -108,7 +108,7 @@ async def teach(ctx, *arg):
     try:
         session = requests.Session()
         req = session.get(base_url)
-        response.raise_for_status()     # ステータスコード200番台以外は例外とする
+        req.raise_for_status()     # ステータスコード200番台以外は例外とする
     except requests.exceptions.RequestException as e:
         await ctx.send("申し訳ありません。\n「"+arg+"」についての知識がありません。")
     
