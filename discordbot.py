@@ -22,25 +22,11 @@ async def on_command_error(ctx, error):
 
 
 @bot.command()
-async def ping(ctx):
-    await ctx.send('pong')
-
-@bot.command()
 async def HowTo(ctx):
     f = open('readme.txt', 'r', encoding='UTF-8')
     data = f.read()
     await ctx.send(data)
     f.close()
-
-
-@bot.command()
-async def print(ctx, *, arg):
-    await ctx.send(arg)
-
-@bot.command()
-async def prints(ctx, *args):
-    arguments = ', '.join(args)
-    await ctx.send(arguments)
 
 
 @bot.command()
