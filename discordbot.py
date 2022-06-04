@@ -3,11 +3,10 @@ from os import getenv
 import traceback
 import random
 from googletrans import Translator
-import requests
-import json
-import urllib.request as req
+import api
 
 bot = commands.Bot(command_prefix='/')
+API = api.API()
 
 '#メッセージ受信時に実行される処理'
 @bot.event
@@ -27,7 +26,7 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @bot.command()
-async def helpp(ctx):
+async def HowTo(ctx):
     f = open('readme.txt', 'r', encoding='UTF-8')
     data = f.read()
     await ctx.send(data)
@@ -90,77 +89,70 @@ async def t(ctx, *arg):
     result = tr.translate(en, src="en", dest="ja").text
     await ctx.send(result)
 
-@bot.command()
-async def address(ctx, arg):
-    url = 'https://api.zipaddress.net/?zipcode={}'.format(arg)
-    try:
-        response = requests.get(url)
-        response.raise_for_status()     # ステータスコード200番台以外は例外とする
-    except requests.exceptions.RequestException as e:
-        print("Error:{}".format(e))
-    data = response.json()
-    await ctx.send(data['data']['fullAddress'])
+"""
+---------------------
+ここからAPI
+---------------------
+"""
+"""
+APIkeyの設定
+"""
+WeatherKey = getenv('WEATHER-API-KEY')
+TRNKey = getenv('TRN-API-KEY')
+# async def playAPI(ctx,func,*arg):
+#     await ctx.send("取得中です")
+   
+#     res = func(*arg)
+#     async for message in ctx.channel.history(limit=1):
+#         await message.delete()
+#     await ctx.send(res)
 
-@bot.command()
-async def teach(ctx, *arg):
-    base_url = "https://ja.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=+True+&exsectopnformat=plain&titles="+arg[0]+"&format=json"
-
-    try:
-        session = requests.Session()
-        req = session.get(base_url)
-        req.raise_for_status()     # ステータスコード200番台以外は例外とする
-    except requests.exceptions.RequestException as e:
-        await ctx.send("申し訳ありません。\n「"+arg+"」についての知識がありません。")
-    
-    req.close()
-    res= req.json()
-    pages=res['query']['pages']
-    page_id = next(iter(pages))
-    result = pages[page_id]["extract"]
-    target = ''
-    if(len(arg)==1):
-        target = '\n'
-    else:
-        target = '\n\n'
-    
-    idx = result.find(target)
-    r = result[:idx]
-    await ctx.send(r)
 
 @bot.command()
 async def dog(ctx):
     await ctx.send("取得中です")
    
-    url = "https://dog.ceo/api/breeds/image/random"
-
-    # (1)APIを実行
-    responce = requests.get(url)
-
-    # (2) 返ってきたJSONを処理
-    jsonObj= responce.json()
-    ImageUrl= jsonObj['message']
+    res= API.dog()
     async for message in ctx.channel.history(limit=1):
         await message.delete()
-    await ctx.send(ImageUrl)
+    await ctx.send(res)
 
+@bot.command()
+async def address(ctx, arg):
+    await ctx.send("取得中です")
+   
+    res= API.address(arg)
+    async for message in ctx.channel.history(limit=1):
+        await message.delete()
+    await ctx.send(res)
+
+@bot.command()
+async def teach(ctx, *arg):
+    await ctx.send("取得中です")
+   
+    res= API.wiki(*arg)
+    async for message in ctx.channel.history(limit=1):
+        await message.delete()
+    await ctx.send(res)
+
+@bot.command()
+async def weather(ctx,arg):
+    await ctx.send("取得中です")
+   
+    res= API.weather(WeatherKey,arg)
+    async for message in ctx.channel.history(limit=1):
+        await message.delete()
+    await ctx.send(res)
+
+@bot.command()
+async def apex(ctx,arg):
+    await ctx.send("取得中です")
+   
+    res= API.apex(TRNKey,arg)
+    async for message in ctx.channel.history(limit=1):
+        await message.delete()
+    await ctx.send(res)
     
-# @bot.command()
-# async def weather(ctx):
-#     # URLや保存ファイル名を指定
-#     url = 'https://www.jma.go.jp/bosai/forecast/data/forecast/010000.json'
-#     filename = 'tenki.json'
-#     # ダウンロード
-#     req.urlretrieve(url, filename)
-#     with open('tenki.json', 'r', encoding="UTF-8") as f:
-#         data = json.load(f)
 
-#     for area in data:
-#         name = area['name']
-#         await ctx.send("[", name, "]")
-#         for ts in area['srf']['timeSeries']:
-#             times = [n for n in ts['timeDefines']]
-#             if 'weathers' in ts['areas']:
-#                 for i,v in enumerate(ts['areas']['weathers']):
-#                     await ctx.send(times[i], ":", v)
 token = getenv('DISCORD_BOT_TOKEN')
 bot.run(token)
