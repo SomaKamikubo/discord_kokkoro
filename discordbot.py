@@ -4,6 +4,7 @@ import traceback
 import random
 from googletrans import Translator
 import api
+import json
 
 bot = commands.Bot(command_prefix='/')
 API = api.API()
@@ -18,7 +19,7 @@ async def on_message(message):
 async def on_command_error(ctx, error):
     orig_error = getattr(error, "original", error)
     error_msg = ''.join(traceback.TracebackException.from_exception(orig_error).format())
-    await ctx.send(error_msg)
+    await ctx.send("コマンドの使い方が間違っています。")
 
 
 @bot.command()
@@ -74,6 +75,96 @@ async def t(ctx, *arg):
         en += val + ' '
     result = tr.translate(en, src="en", dest="ja").text
     await ctx.send(result)
+
+def printTextFile(arg,pas):
+    try:
+        arg = int(arg)
+    except ValueError:
+        return("引数が変かも") 
+    if(arg == 0):
+        f = open(pas, 'r', encoding='UTF-8')
+        data = f.read()
+        return data[:-1]
+    
+    f = open(pas, 'r', encoding='UTF-8')
+    datalist = f.readlines()
+    f.close()
+    return printData(arg,datalist)[:-1]
+
+def printJsonFile(arg,pas):
+    try:
+        arg = int(arg)
+    except ValueError:
+        return("引数が変かも")  
+
+    f = open(pas, 'r', encoding='UTF-8')
+    json_load = json.load(f)
+    f.close()
+
+    if(arg == 0):
+        return json_load
+    
+
+    datalist =  []
+    for i in json_load:
+        for j in json_load[i]:
+            datalist.append(j)
+    return printData(arg,datalist)
+    
+
+def printData(arg,datalist):
+    if(arg > len(datalist)):
+        return "引数が取得したいデータの総数より多いです。"
+    result = ""
+    for _ in range(arg):
+        r = random.randint(1,len(datalist))
+        index = r-1 #randientが0を持ってこれないため
+        result += datalist[index]
+        del datalist[index]
+    return result #最後の改行をなくす
+
+
+
+@bot.command()
+async def smash(ctx,arg=1):
+    await ctx.send(printTextFile(arg,'Data/Data_SmaBra/SmashChara.txt'))
+
+
+@bot.command()
+async def apeC(ctx,arg=1):
+    await ctx.send(printTextFile(arg,'Data/Data_Apex/ApexChara.txt'))
+
+@bot.command()
+async def apeB(ctx,arg=1):
+    await ctx.send(printJsonFile(arg,'Data/Data_Apex/ApexBullet.json'))
+
+
+@bot.command()
+async def apeBT(ctx,arg=1,arg2=None):
+    f = open('Data/Data_Apex/ApexBullet.json', 'r', encoding='UTF-8')
+    json_load = json.load(f)
+    f.close()
+    try:
+        datalist = json_load[arg2]
+    except KeyError:
+        await ctx.send("正しい武器種を選択してください。") 
+        return
+
+
+    if(arg == 0):
+        arg = len(datalist)
+
+    if(int(arg) > len(datalist)):
+        await ctx.send("引数が武器の総数より多いです。") 
+        return
+    result = ""
+    for _ in range(int(arg)):
+        r = random.randint(1,len(datalist))
+        index = r-1 #randientが0を持ってこれないため
+        result += datalist[index] + "\n"
+        del datalist[index]
+    await ctx.send(result)#最後の改行をなくす
+    
 
 """
 ---------------------
